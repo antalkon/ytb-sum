@@ -60,17 +60,23 @@ $ ytb-sum https://youtu.be/aircAruvnKk
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/antalkon/ytb-sum/main/install.sh | sh
-brew install yt-dlp ffmpeg        # или: pipx install yt-dlp / apt install ffmpeg
 ```
 
-Скрипт определяет ОС и архитектуру, проверяет SHA-256 и ставит бинарник в `/usr/local/bin` (или `~/.local/bin`). Конкретную версию можно указать так: `YTB_SUM_VERSION=v0.1.0`.
+Больше ничего не нужно. Скрипт:
+
+- определяет ОС и архитектуру, проверяет SHA-256;
+- ставит бинарник в папку, которая уже есть в `PATH` и доступна на запись (например, `/opt/homebrew/bin`), поэтому `ytb-sum` работает сразу. Если такой нет, ставит в `~/.local/bin` и дописывает её в профиль shell (`.zshrc`, `.bashrc`, fish);
+- доустанавливает `yt-dlp` и `ffmpeg` через Homebrew, apt, dnf, pacman или apk.
+
+Настройки: `YTB_SUM_VERSION=v0.1.0`, `YTB_SUM_INSTALL_DIR=…`, `YTB_SUM_NO_DEPS=1`, `YTB_SUM_NO_MODIFY_PATH=1`.
 
 ### Windows (PowerShell)
 
 ```powershell
 irm https://raw.githubusercontent.com/antalkon/ytb-sum/main/install.ps1 | iex
-winget install yt-dlp.yt-dlp Gyan.FFmpeg
 ```
+
+Добавляет `ytb-sum` в пользовательский `PATH` (команда работает сразу в том же окне) и при необходимости ставит `yt-dlp` и `ffmpeg` через winget.
 
 ### Пакеты для Linux
 

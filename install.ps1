@@ -3,7 +3,8 @@
 #   irm https://raw.githubusercontent.com/antalkon/ytb-sum/main/install.ps1 | iex
 #
 # Environment: YTB_SUM_VERSION (default: latest), YTB_SUM_INSTALL_DIR
-# (default: %LOCALAPPDATA%\Programs\ytb-sum).
+# (default: %LOCALAPPDATA%\Programs\ytb-sum), YTB_SUM_NO_DEPS=1 to skip
+# installing yt-dlp / ffmpeg with winget.
 $ErrorActionPreference = 'Stop'
 $repo = 'antalkon/ytb-sum'
 
@@ -38,12 +39,25 @@ try {
     $userPath = [Environment]::GetEnvironmentVariable('Path', 'User')
     if (($userPath -split ';') -notcontains $dir) {
         [Environment]::SetEnvironmentVariable('Path', "$userPath;$dir", 'User')
-        Write-Host "Added $dir to your user PATH (restart the terminal)"
+        Write-Host "Added $dir to your user PATH"
     }
+    # Make it usable in this session right away.
+    if (($env:Path -split ';') -notcontains $dir) { $env:Path = "$env:Path;$dir" }
 } finally {
     Remove-Item -Recurse -Force $tmp -ErrorAction SilentlyContinue
 }
 
+# Runtime dependencies (skip with $env:YTB_SUM_NO_DEPS = 1).
+if (-not $env:YTB_SUM_NO_DEPS -and (Get-Command winget -ErrorAction SilentlyContinue)) {
+    foreach ($dep in @(@('yt-dlp', 'yt-dlp.yt-dlp'), @('ffmpeg', 'Gyan.FFmpeg'))) {
+        if (-not (Get-Command $dep[0] -ErrorAction SilentlyContinue)) {
+            Write-Host "Installing $($dep[0])"
+            winget install --id $dep[1] -e --silent --accept-package-agreements --accept-source-agreements | Out-Null
+        }
+    }
+    # winget updates PATH in the registry; reload it for this session.
+    $env:Path = [Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' + [Environment]::GetEnvironmentVariable('Path', 'User')
+}
 if (-not (Get-Command yt-dlp -ErrorAction SilentlyContinue)) {
     Write-Warning 'yt-dlp is required at runtime: winget install yt-dlp.yt-dlp  (and Gyan.FFmpeg for --audio)'
 }

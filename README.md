@@ -60,17 +60,23 @@ ytb-sum needs **[yt-dlp](https://github.com/yt-dlp/yt-dlp)** at runtime (and **f
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/antalkon/ytb-sum/main/install.sh | sh
-brew install yt-dlp ffmpeg        # or: pipx install yt-dlp / apt install ffmpeg
 ```
 
-The script detects your OS/CPU, verifies the SHA-256 checksum and installs to `/usr/local/bin` (or `~/.local/bin`). Pin a version with `YTB_SUM_VERSION=v0.1.0`.
+That's all. The script:
+
+- detects your OS/CPU and verifies the SHA-256 checksum;
+- installs into a writable directory already on your `PATH` (e.g. `/opt/homebrew/bin`), so `ytb-sum` works right away; otherwise uses `~/.local/bin` and adds it to your shell profile (`.zshrc`, `.bashrc`, fish);
+- installs missing `yt-dlp` and `ffmpeg` with Homebrew, apt, dnf, pacman or apk.
+
+Options: `YTB_SUM_VERSION=v0.1.0`, `YTB_SUM_INSTALL_DIR=…`, `YTB_SUM_NO_DEPS=1`, `YTB_SUM_NO_MODIFY_PATH=1`.
 
 ### Windows (PowerShell)
 
 ```powershell
 irm https://raw.githubusercontent.com/antalkon/ytb-sum/main/install.ps1 | iex
-winget install yt-dlp.yt-dlp Gyan.FFmpeg
 ```
+
+Adds `ytb-sum` to your user `PATH` (usable in the same window) and installs `yt-dlp` / `ffmpeg` with winget if missing.
 
 ### Linux packages
 

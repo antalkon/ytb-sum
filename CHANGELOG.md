@@ -4,6 +4,17 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Changed
+
+- `install.sh` installs into a writable directory already on `PATH`
+  (e.g. `/opt/homebrew/bin`) so the command works immediately; otherwise it
+  adds `~/.local/bin` to the shell profile. It also installs missing `yt-dlp`
+  and `ffmpeg`, and removes copies left by earlier installs.
+- `install.ps1` makes `ytb-sum` available in the current session and installs
+  `yt-dlp` / `ffmpeg` with winget.
+
 ## [0.1.0] - 2026-10-24
 
 ### Added
