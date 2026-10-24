@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="ytb-sum">
+<title>But what is a neural network? | Deep learning chapter 1</title>
+<style>
+:root {
+  --bg: #f6f5f2; --surface: #ffffff; --text: #1d1d1f; --muted: #6b6b70;
+  --line: #e7e5e0; --accent: #d9332b; --accent-soft: #fdecea; --link: #1f5fd1;
+  --pill: #f1efea; --shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111113; --surface: #1a1a1d; --text: #ececf0; --muted: #9b9ba3;
+    --line: #2b2b30; --accent: #ff5f57; --accent-soft: #2a1716; --link: #7fb0ff;
+    --pill: #26262b; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111113; --surface: #1a1a1d; --text: #ececf0; --muted: #9b9ba3;
+  --line: #2b2b30; --accent: #ff5f57; --accent-soft: #2a1716; --link: #7fb0ff;
+  --pill: #26262b; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ 
+.bar {
+  position: sticky; top: 0; z-index: 10;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: saturate(1.4) blur(12px); -webkit-backdrop-filter: saturate(1.4) blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.bar-inner { max-width: 880px; margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; gap: 14px; }
+.brand { font-weight: 700; letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; white-space: nowrap; color: var(--text); }
+.brand .dot { width: 22px; height: 16px; border-radius: 5px; background: var(--accent); position: relative; }
+.brand .dot::after { content: ""; position: absolute; left: 9px; top: 4px; border-left: 6px solid #fff; border-top: 4px solid transparent; border-bottom: 4px solid transparent; }
+.toc { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; flex: 1; }
+.toc::-webkit-scrollbar { display: none; }
+.toc a { font-size: 13px; color: var(--muted); padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+.toc a:hover, .toc a.active { background: var(--pill); color: var(--text); text-decoration: none; }
+.theme { border: 1px solid var(--line); background: var(--surface); color: var(--text); border-radius: 999px; width: 32px; height: 32px; cursor: pointer; font-size: 15px; flex: none; }
+
+ 
+main { max-width: 880px; margin: 0 auto; padding: 28px 20px 64px; }
+.hero { display: grid; grid-template-columns: 300px 1fr; gap: 24px; align-items: center; margin-bottom: 28px; }
+.thumb { position: relative; display: block; border-radius: 14px; overflow: hidden; aspect-ratio: 16/9; background: var(--pill); box-shadow: var(--shadow); }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s ease; }
+.thumb:hover img { transform: scale(1.03); }
+.thumb .play { position: absolute; inset: 0; margin: auto; width: 64px; height: 44px; border-radius: 12px; background: rgba(217,51,43,.92); }
+.thumb .play::after { content: ""; position: absolute; left: 26px; top: 13px; border-left: 16px solid #fff; border-top: 9px solid transparent; border-bottom: 9px solid transparent; }
+h1 { font-size: 30px; line-height: 1.2; letter-spacing: -.02em; margin: 0 0 14px; }
+.meta ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.meta li { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px; font-size: 14px; color: var(--text); }
+.meta li strong { color: var(--muted); font-weight: 500; margin-right: 2px; }
+.meta a { word-break: break-all; }
+
+ 
+.content { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 8px 36px 28px; box-shadow: var(--shadow); }
+.content h2 { font-size: 21px; letter-spacing: -.01em; margin: 34px 0 12px; display: flex; align-items: center; gap: 10px; }
+.content h2::before { content: ""; width: 4px; height: 20px; border-radius: 2px; background: var(--accent); flex: none; }
+.content > h2:first-child + p {
+  background: var(--accent-soft); border-left: 3px solid var(--accent);
+  border-radius: 0 12px 12px 0; padding: 16px 20px; font-size: 18px; margin: 0 0 8px;
+}
+.content h3 { font-size: 17px; margin: 26px 0 8px; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.content h3 > a:first-child {
+  font: 600 13px/1 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--accent);
+  background: var(--accent-soft); padding: 5px 9px; border-radius: 999px; flex: none;
+}
+.content h3 > a:first-child::before { content: "▶ "; font-size: 9px; vertical-align: 1px; }
+.content h3 > a:first-child:hover { text-decoration: none; filter: brightness(1.1); }
+.content ul { padding-left: 22px; margin: 8px 0; }
+.content li { margin: 6px 0; }
+.content li::marker { color: var(--accent); }
+.content code { background: var(--pill); padding: 1px 6px; border-radius: 6px; font-size: .9em; }
+footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 28px; }
+
+@media (max-width: 720px) {
+  body { font-size: 16px; }
+  .hero { grid-template-columns: 1fr; gap: 16px; }
+  h1 { font-size: 24px; }
+  .content { padding: 4px 18px 20px; border-radius: 14px; }
+  .toc { display: none; }
+  .bar-inner { justify-content: space-between; }
+}
+@media print {
+  .bar, .theme { display: none; }
+  body { background: #fff; }
+  .content { box-shadow: none; border: none; padding: 0; }
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="bar-inner">
+    <a class="brand" href="#top"><span class="dot"></span>ytb-sum</a>
+    <nav class="toc">
+      <a href="#%d0%ba%d1%80%d0%b0%d1%82%d0%ba%d0%be">Кратко</a><a href="#%d0%ba%d0%bb%d1%8e%d1%87%d0%b5%d0%b2%d1%8b%d0%b5-%d1%82%d0%b5%d0%b7%d0%b8%d1%81%d1%8b">Ключевые тезисы</a><a href="#%d1%81%d0%be%d0%b4%d0%b5%d1%80%d0%b6%d0%b0%d0%bd%d0%b8%d0%b5">Содержание</a><a href="#%d0%b2%d1%8b%d0%b2%d0%be%d0%b4%d1%8b">Выводы</a><a href="#%d1%83%d0%bf%d0%be%d0%bc%d0%b8%d0%bd%d0%b0%d0%b5%d1%82%d1%81%d1%8f">Упоминается</a>
+    </nav>
+    <button class="theme" type="button" title="Toggle theme" aria-label="Toggle theme">◐</button>
+  </div>
+</header>
+<main id="top">
+  <section class="hero">
+    <a class="thumb" href="https://www.youtube.com/watch?v=aircAruvnKk" target="_blank" rel="noopener">
+      <img src="https://i.ytimg.com/vi/aircAruvnKk/hqdefault.jpg" alt="" onerror="this.style.display='none'">
+      <span class="play"></span>
+    </a>
+    <div>
+      <h1>But what is a neural network? | Deep learning chapter 1</h1>
+      <div class="meta"><ul>
+<li><strong>Канал:</strong> 3Blue1Brown</li>
+<li><strong>Длительность:</strong> 18:40</li>
+<li><strong>Опубликовано:</strong> 2017-10-05</li>
+<li><strong>Ссылка:</strong> <a href="https://www.youtube.com/watch?v=aircAruvnKk">youtu.be/aircAruvnKk</a></li>
+</ul>
+</div>
+    </div>
+  </section>
+  <article class="content">
+<h2 id="кратко">Кратко</h2>
+<p>Нейронная сеть для распознавания цифр — это цепочка слоёв нейронов, каждый из которых хранит число от 0 до 1 и вычисляется как сигмоида от взвешенной суммы активаций предыдущего слоя плюс смещение. В примере сети с 784 входами, двумя скрытыми слоями по 16 нейронов и 10 выходами около 13 000 весов и смещений, а весь слой компактно записывается как σ(Wa + b); обучение — это подбор этих параметров. В конце отмечается, что на практике сигмоиду заменила ReLU, которая лучше обучается.</p>
+<h2 id="ключевые-тезисы">Ключевые тезисы</h2>
+<ul>
+<li>Нейрон в сети — это просто «хранилище» числа от 0 до 1 (активация). Первый слой — 784 нейрона по числу пикселей 28x28, значение — яркость пикселя (0 — чёрный, 1 — белый).</li>
+<li>В примере сеть имеет 4 слоя: вход 784, два скрытых по 16 нейронов (выбор произвольный) и выход из 10 нейронов по цифрам; самый яркий выходной нейрон — ответ сети.</li>
+<li>Слоистая структура мотивирована идеей иерархии абстракций: пиксели → небольшие края → части (петли, линии) → цифры. Будет ли сеть реально так работать — вопрос, к которому автор вернётся в следующем видео.</li>
+<li>Активация нейрона = сигмоида(взвешенная сумма активаций предыдущего слоя + смещение). Веса задают, какой паттерн ищет нейрон, а смещение — насколько большой должна быть сумма, чтобы нейрон стал активным.</li>
+<li>Всего в сети около 13 000 весов и смещений (784×16 весов и 16 смещений только для первого перехода); «обучение» — это подбор значений всех этих параметров.</li>
+<li>Переход между слоями компактно записывается через линейную алгебру: σ(Wa + b), где W — матрица весов, a — вектор активаций, b — вектор смещений; это упрощает код и ускоряет его за счёт оптимизированного умножения матриц.</li>
+<li>Вся сеть — это просто очень сложная функция из 784 чисел в 10 чисел с 13 000 параметрами.</li>
+<li>Современные сети редко используют сигмоиду: ReLU (max(0, a)) обучается проще, особенно в очень глубоких сетях.</li>
+</ul>
+<h2 id="содержание">Содержание</h2>
+<h3 id="0-04-https-www-youtube-com-watch-v-aircaruvnkk-t-4s-вводный-пример-распознавание-цифр"><a href="https://www.youtube.com/watch?v=aircAruvnKk&amp;t=4s">0:04</a> Вводный пример: распознавание цифр</h3>
+<ul>
+<li>Цифру 3 в разрешении 28x28 мозг узнаёт без усилий, хотя пиксели у разных троек сильно отличаются.</li>
+<li>Написать программу, переводящую сетку 28x28 в число от 0 до 10, — крайне сложная задача.</li>
+</ul>
+<h3 id="1-10-https-www-youtube-com-watch-v-aircaruvnkk-t-70s-обзор-серии"><a href="https://www.youtube.com/watch?v=aircAruvnKk&amp;t=70s">1:10</a> Обзор серии</h3>
+<ul>
+<li>Цель — показать, чем нейросеть является как математический объект, и чтобы структура казалась обоснованной; в этом видео — структура, в следующем — обучение.</li>
+<li>Строится сеть для распознавания рукописных цифр — классический пример; рассматривается простейшая «ванильная» форма без дополнений, необходимая для понимания современных вариантов.</li>
+</ul>
+<h3 id="2-58-https-www-youtube-com-watch-v-aircaruvnkk-t-178s-нейроны-и-слои"><a href="https://www.youtube.com/watch?v=aircAruvnKk&amp;t=178s">2:58</a> Нейроны и слои</h3>
+<ul>
+<li>Нейрон — это число от 0 до 1 (активация). Первый слой — 784 нейрона для пикселей, яркость от 0 до 1.</li>
+<li>Последний слой — 10 нейронов, активация показывает, насколько сеть считает изображение той или иной цифрой.</li>
+<li>Два скрытых слоя по 16 нейронов — произвольный выбор; активации одного слоя определяют активации следующего.</li>
+<li>Обученная сеть: паттерн входных активаций порождает паттерны в следующих слоях, самый яркий выходной нейрон — ответ.</li>
+</ul>
+<h3 id="5-36-https-www-youtube-com-watch-v-aircaruvnkk-t-336s-почему-слои"><a href="https://www.youtube.com/watch?v=aircAruvnKk&amp;t=336s">5:36</a> Почему слои</h3>
+<ul>
+<li>Люди распознают цифры по компонентам: у 9 петля сверху и линия справа, у 8 две петли, у 4 три линии.</li>
+<li>Надежда: нейроны предпоследнего слоя отвечают за такие части, а предыдущего — за мелкие края, из которых складываются петли и линии.</li>
+<li>Такая иерархия полезна и для других задач, например для распознавания речи: звуки → слоги → слова → фразы.</li>
+</ul>
+<h3 id="8-30-https-www-youtube-com-watch-v-aircaruvnkk-t-510s-пример-с-детектором-края-веса-сигмоида-смещение"><a href="https://www.youtube.com/watch?v=aircAruvnKk&amp;t=510s">8:30</a> Пример с детектором края: веса, сигмоида, смещение</h3>
+<ul>
+<li>Каждой связи нейрона с нейронами предыдущего слоя назначается вес, затем считается взвешенная сумма активаций; веса можно рисовать как сетку (зелёный — положительные, красный — отрицательные).</li>
+<li>Положительные веса в нужной области и отрицательные вокруг делают нейрон детектором края.</li>
+<li>Сумму пропускают через сигмоиду, сжимающую числовую ось в диапазон 0–1.</li>
+<li>Смещение (например, −10) добавляется до сигмоиды и определяет порог, с которого нейрон становится активным.</li>
+</ul>
+<h3 id="11-36-https-www-youtube-com-watch-v-aircaruvnkk-t-696s-подсчёт-весов-и-смещений"><a href="https://www.youtube.com/watch?v=aircAruvnKk&amp;t=696s">11:36</a> Подсчёт весов и смещений</h3>
+<ul>
+<li>Каждый нейрон скрытого слоя связан со всеми 784 входами, у каждой связи свой вес, у каждого нейрона своё смещение.</li>
+<li>Для первого перехода — 784×16 весов и 16 смещений; во всей сети около 13 000 параметров.</li>
+<li>Обучение — это поиск подходящих значений всех этих параметров компьютером.</li>
+</ul>
+<h3 id="12-42-https-www-youtube-com-watch-v-aircaruvnkk-t-762s-как-с-этим-связано-обучение"><a href="https://www.youtube.com/watch?v=aircAruvnKk&amp;t=762s">12:42</a> Как с этим связано обучение</h3>
+<ul>
+<li>Мысленный эксперимент: настраивать веса вручную, чтобы второй слой искал края, третий — паттерны.</li>
+<li>Понимание смысла весов и смещений помогает улучшать структуру, когда сеть работает плохо, и проверять допущения, когда работает не так, как ожидалось.</li>
+</ul>
+<h3 id="13-26-https-www-youtube-com-watch-v-aircaruvnkk-t-806s-обозначения-и-линейная-алгебра"><a href="https://www.youtube.com/watch?v=aircAruvnKk&amp;t=806s">13:26</a> Обозначения и линейная алгебра</h3>
+<ul>
+<li>Активации слоя — вектор-столбец, веса — матрица, где каждая строка соответствует одному нейрону следующего слоя; смещения — вектор.</li>
+<li>Переход записывается как сигмоида от (W·a + b), применяемая покомпонентно.</li>
+<li>Такая запись упрощает код и ускоряет вычисления благодаря оптимизации матричного умножения в библиотеках; автор советует свою серию по линейной алгебре (глава 3).</li>
+</ul>
+<h3 id="15-22-https-www-youtube-com-watch-v-aircaruvnkk-t-922s-итог-сеть-как-функция"><a href="https://www.youtube.com/watch?v=aircAruvnKk&amp;t=922s">15:22</a> Итог: сеть как функция</h3>
+<ul>
+<li>Нейрон точнее считать функцией, принимающей выходы предыдущего слоя и выдающей число от 0 до 1.</li>
+<li>Вся сеть — функция из 784 чисел в 10 чисел с 13 000 параметрами; её сложность оправдана сложностью задачи.</li>
+<li>В следующем видео — как сеть учится на данных и что она на самом деле делает.</li>
+</ul>
+<h3 id="17-10-https-www-youtube-com-watch-v-aircaruvnkk-t-1030s-сигмоида-против-relu"><a href="https://www.youtube.com/watch?v=aircAruvnKk&amp;t=1030s">17:10</a> Сигмоида против ReLU</h3>
+<ul>
+<li>Лиша Ли: ранние сети использовали сигмоиду из-за биологической аналогии, но сегодня её почти не применяют.</li>
+<li>ReLU (rectified linear unit) = max(0, a): легче обучается, хорошо работает в очень глубоких сетях; сигмоида затрудняла обучение.</li>
+</ul>
+<h2 id="выводы">Выводы</h2>
+<ul>
+<li>Чтобы понять нейросеть, представляйте её как функцию: нейрон — число 0–1, слой — вектор, переход между слоями — σ(Wa + b).</li>
+<li>Веса определяют, какой паттерн ищет нейрон, а смещение — порог его срабатывания; полезно понимать их смысл, а не считать сеть чёрным ящиком.</li>
+<li>Количество параметров считается просто: для связи слоёв из n и m нейронов — n×m весов и m смещений.</li>
+<li>Для практики стоит изучить линейную алгебру (умножение матрицы на вектор), так как на ней держится большая часть машинного обучения.</li>
+<li>В современных сетях лучше использовать ReLU вместо сигмоиды — её проще обучать.</li>
+</ul>
+<h2 id="упоминается">Упоминается</h2>
+<ul>
+<li>Michael Nielsen — книга о нейронных сетях и глубоком обучении, бесплатная, с кодом и данными на том же примере с цифрами</li>
+<li>Chris Olah — блог colah.github.io</li>
+<li>Welch Labs — серии видео о машинном обучении</li>
+<li>Goodfellow, Bengio, Courville — учебник «Deep Learning»</li>
+<li>Distill — публикация distill.pub</li>
+<li>3Blue1Brown, серия по линейной алгебре (глава 3) — визуальное объяснение матриц и умножения матрицы на вектор</li>
+<li>Lisha Li — PhD по теории глубокого обучения, Amplify Partners, обсуждает ReLU</li>
+<li>Amplify Partners — венчурная фирма, частично финансировавшая видео</li>
+<li>manim — библиотека для анимаций</li>
+<li>Сигмоида (логистическая кривая) и ReLU — функции активации</li>
+</ul>
+
+  </article>
+  <footer>Generated by <a href="https://github.com/antalkon/ytb-sum">ytb-sum</a> · 2026-10-24 16:18</footer>
+</main>
+<script>
+(function () {
+  var root = document.documentElement;
+  try { var t = localStorage.getItem("ytb-sum-theme"); if (t) root.dataset.theme = t; } catch (e) {}
+  document.querySelector(".theme").addEventListener("click", function () {
+    var dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    root.dataset.theme = dark ? "light" : "dark";
+    try { localStorage.setItem("ytb-sum-theme", root.dataset.theme); } catch (e) {}
+  });
+  
+  document.querySelectorAll('a[href^="http"]').forEach(function (a) { a.target = "_blank"; a.rel = "noopener"; });
+  
+  var links = {};
+  document.querySelectorAll(".toc a").forEach(function (a) { links[decodeURIComponent(a.getAttribute("href").slice(1))] = a; });
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        Object.keys(links).forEach(function (k) { links[k].classList.toggle("active", k === e.target.id); });
+      });
+    }, { rootMargin: "-80px 0px -70% 0px" });
+    document.querySelectorAll(".content h2[id]").forEach(function (h) { io.observe(h); });
+  }
+})();
+</script>
+</body>
+</html>

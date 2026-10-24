@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="{{.Lang}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="ytb-sum">
+<title>{{.Title}}</title>
+<style>
+:root {
+  --bg: #f6f5f2; --surface: #ffffff; --text: #1d1d1f; --muted: #6b6b70;
+  --line: #e7e5e0; --accent: #d9332b; --accent-soft: #fdecea; --link: #1f5fd1;
+  --pill: #f1efea; --shadow: 0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.06);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111113; --surface: #1a1a1d; --text: #ececf0; --muted: #9b9ba3;
+    --line: #2b2b30; --accent: #ff5f57; --accent-soft: #2a1716; --link: #7fb0ff;
+    --pill: #26262b; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111113; --surface: #1a1a1d; --text: #ececf0; --muted: #9b9ba3;
+  --line: #2b2b30; --accent: #ff5f57; --accent-soft: #2a1716; --link: #7fb0ff;
+  --pill: #26262b; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* top bar */
+.bar {
+  position: sticky; top: 0; z-index: 10;
+  background: color-mix(in srgb, var(--bg) 85%, transparent);
+  backdrop-filter: saturate(1.4) blur(12px); -webkit-backdrop-filter: saturate(1.4) blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+.bar-inner { max-width: 880px; margin: 0 auto; padding: 10px 20px; display: flex; align-items: center; gap: 14px; }
+.brand { font-weight: 700; letter-spacing: -.01em; display: flex; align-items: center; gap: 8px; white-space: nowrap; color: var(--text); }
+.brand .dot { width: 22px; height: 16px; border-radius: 5px; background: var(--accent); position: relative; }
+.brand .dot::after { content: ""; position: absolute; left: 9px; top: 4px; border-left: 6px solid #fff; border-top: 4px solid transparent; border-bottom: 4px solid transparent; }
+.toc { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; flex: 1; }
+.toc::-webkit-scrollbar { display: none; }
+.toc a { font-size: 13px; color: var(--muted); padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+.toc a:hover, .toc a.active { background: var(--pill); color: var(--text); text-decoration: none; }
+.theme { border: 1px solid var(--line); background: var(--surface); color: var(--text); border-radius: 999px; width: 32px; height: 32px; cursor: pointer; font-size: 15px; flex: none; }
+
+/* layout */
+main { max-width: 880px; margin: 0 auto; padding: 28px 20px 64px; }
+.hero { display: grid; grid-template-columns: 300px 1fr; gap: 24px; align-items: center; margin-bottom: 28px; }
+.thumb { position: relative; display: block; border-radius: 14px; overflow: hidden; aspect-ratio: 16/9; background: var(--pill); box-shadow: var(--shadow); }
+.thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s ease; }
+.thumb:hover img { transform: scale(1.03); }
+.thumb .play { position: absolute; inset: 0; margin: auto; width: 64px; height: 44px; border-radius: 12px; background: rgba(217,51,43,.92); }
+.thumb .play::after { content: ""; position: absolute; left: 26px; top: 13px; border-left: 16px solid #fff; border-top: 9px solid transparent; border-bottom: 9px solid transparent; }
+h1 { font-size: 30px; line-height: 1.2; letter-spacing: -.02em; margin: 0 0 14px; }
+.meta ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.meta li { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px; font-size: 14px; color: var(--text); }
+.meta li strong { color: var(--muted); font-weight: 500; margin-right: 2px; }
+.meta a { word-break: break-all; }
+
+/* content */
+.content { background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 8px 36px 28px; box-shadow: var(--shadow); }
+.content h2 { font-size: 21px; letter-spacing: -.01em; margin: 34px 0 12px; display: flex; align-items: center; gap: 10px; }
+.content h2::before { content: ""; width: 4px; height: 20px; border-radius: 2px; background: var(--accent); flex: none; }
+.content > h2:first-child + p {
+  background: var(--accent-soft); border-left: 3px solid var(--accent);
+  border-radius: 0 12px 12px 0; padding: 16px 20px; font-size: 18px; margin: 0 0 8px;
+}
+.content h3 { font-size: 17px; margin: 26px 0 8px; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.content h3 > a:first-child {
+  font: 600 13px/1 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--accent);
+  background: var(--accent-soft); padding: 5px 9px; border-radius: 999px; flex: none;
+}
+.content h3 > a:first-child::before { content: "▶ "; font-size: 9px; vertical-align: 1px; }
+.content h3 > a:first-child:hover { text-decoration: none; filter: brightness(1.1); }
+.content ul { padding-left: 22px; margin: 8px 0; }
+.content li { margin: 6px 0; }
+.content li::marker { color: var(--accent); }
+.content code { background: var(--pill); padding: 1px 6px; border-radius: 6px; font-size: .9em; }
+footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 28px; }
+
+@media (max-width: 720px) {
+  body { font-size: 16px; }
+  .hero { grid-template-columns: 1fr; gap: 16px; }
+  h1 { font-size: 24px; }
+  .content { padding: 4px 18px 20px; border-radius: 14px; }
+  .toc { display: none; }
+  .bar-inner { justify-content: space-between; }
+}
+@media print {
+  .bar, .theme { display: none; }
+  body { background: #fff; }
+  .content { box-shadow: none; border: none; padding: 0; }
+}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="bar-inner">
+    <a class="brand" href="#top"><span class="dot"></span>ytb-sum</a>
+    <nav class="toc">
+      {{range .Sections}}<a href="#{{.ID}}">{{.Title}}</a>{{end}}
+    </nav>
+    <button class="theme" type="button" title="Toggle theme" aria-label="Toggle theme">◐</button>
+  </div>
+</header>
+<main id="top">
+  <section class="hero"{{if not .VideoID}} style="grid-template-columns:1fr"{{end}}>
+    {{if .VideoID}}<a class="thumb" href="https://www.youtube.com/watch?v={{.VideoID}}" target="_blank" rel="noopener">
+      <img src="https://i.ytimg.com/vi/{{.VideoID}}/hqdefault.jpg" alt="" onerror="this.style.display='none'">
+      <span class="play"></span>
+    </a>{{end}}
+    <div>
+      <h1>{{.Title}}</h1>
+      <div class="meta">{{.Header}}</div>
+    </div>
+  </section>
+  <article class="content">
+{{.Body}}
+  </article>
+  <footer>Generated by <a href="https://github.com/antalkon/ytb-sum">ytb-sum</a> · {{.Generated}}</footer>
+</main>
+<script>
+(function () {
+  var root = document.documentElement;
+  try { var t = localStorage.getItem("ytb-sum-theme"); if (t) root.dataset.theme = t; } catch (e) {}
+  document.querySelector(".theme").addEventListener("click", function () {
+    var dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    root.dataset.theme = dark ? "light" : "dark";
+    try { localStorage.setItem("ytb-sum-theme", root.dataset.theme); } catch (e) {}
+  });
+  // External links (timestamps, video) open in a new tab.
+  document.querySelectorAll('a[href^="http"]').forEach(function (a) { a.target = "_blank"; a.rel = "noopener"; });
+  // Highlight the current section in the top bar.
+  var links = {};
+  document.querySelectorAll(".toc a").forEach(function (a) { links[decodeURIComponent(a.getAttribute("href").slice(1))] = a; });
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        Object.keys(links).forEach(function (k) { links[k].classList.toggle("active", k === e.target.id); });
+      });
+    }, { rootMargin: "-80px 0px -70% 0px" });
+    document.querySelectorAll(".content h2[id]").forEach(function (h) { io.observe(h); });
+  }
+})();
+</script>
+</body>
+</html>

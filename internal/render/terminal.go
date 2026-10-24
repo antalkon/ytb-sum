@@ -33,6 +33,7 @@ type Stats struct {
 	Usage   llm.Usage
 	Elapsed time.Duration
 	File    string
+	HTML    string
 	Chunks  int
 }
 
@@ -140,12 +141,19 @@ func (p *Printer) footer(st Stats) string {
 		if st.File != "" {
 			line += "\nSaved: " + st.File
 		}
+		if st.HTML != "" {
+			line += "\nSaved: " + st.HTML
+		}
 		return line
 	}
 	out := "  " + lipgloss.NewStyle().Foreground(muted).Render(line)
 	if st.File != "" {
 		out += "\n  " + lipgloss.NewStyle().Foreground(good).Render("✔ Saved ") +
 			lipgloss.NewStyle().Bold(true).Render(st.File)
+	}
+	if st.HTML != "" {
+		out += "\n  " + lipgloss.NewStyle().Foreground(good).Render("✔ Saved ") +
+			lipgloss.NewStyle().Bold(true).Render(st.HTML)
 	}
 	return out + "\n"
 }

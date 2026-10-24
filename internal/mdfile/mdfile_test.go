@@ -78,3 +78,11 @@ func TestDocument(t *testing.T) {
 		t.Error("empty takeaways section should be omitted")
 	}
 }
+
+func TestWriteExt(t *testing.T) {
+	dir := t.TempDir()
+	p, err := WriteExt(dir, "A/B", ".html", "<p>")
+	if err != nil || filepath.Base(p) != "A B.html" {
+		t.Fatalf("p=%s err=%v", p, err)
+	}
+}

@@ -4,7 +4,15 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.2.0] - 2026-10-24
+
+### Added
+
+- `ytb-sum html <file.md>`: turn a saved summary into a styled, self-contained
+  web page (dark/light theme, section navigation, video thumbnail, clickable
+  timestamps) and open it in the default browser.
+- `--html` flag: also save the summary as `.html` and open it; `--no-open`
+  saves without opening. Both can be set in the config file.
 
 ### Changed
 
@@ -36,4 +44,5 @@ All notable changes to this project are documented here. The format follows
 - Installers for macOS/Linux (`install.sh`) and Windows (`install.ps1`),
   `.deb`/`.rpm`/`.apk` packages, binaries for 6 OS/arch targets.
 
+[0.2.0]: https://github.com/antalkon/ytb-sum/releases/tag/v0.2.0
 [0.1.0]: https://github.com/antalkon/ytb-sum/releases/tag/v0.1.0

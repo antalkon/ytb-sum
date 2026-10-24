@@ -126,11 +126,16 @@ func SafeFilename(title string) string {
 // Write saves content as "<title>.md" in dir without overwriting existing
 // files ("<title> (2).md" and so on). It returns the path written.
 func Write(dir, title, content string) (string, error) {
+	return WriteExt(dir, title, ".md", content)
+}
+
+// WriteExt is Write with a custom extension such as ".html".
+func WriteExt(dir, title, ext, content string) (string, error) {
 	stem := SafeFilename(title)
 	for i := 1; i < 1000; i++ {
-		name := stem + ".md"
+		name := stem + ext
 		if i > 1 {
-			name = fmt.Sprintf("%s (%d).md", stem, i)
+			name = fmt.Sprintf("%s (%d)%s", stem, i, ext)
 		}
 		path := filepath.Join(dir, name)
 		f, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)

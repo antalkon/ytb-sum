@@ -17,7 +17,9 @@ import (
 	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
 
+	"github.com/antalkon/ytb-sum/internal/browser"
 	"github.com/antalkon/ytb-sum/internal/config"
+	"github.com/antalkon/ytb-sum/internal/htmlpage"
 	"github.com/antalkon/ytb-sum/internal/llm"
 	"github.com/antalkon/ytb-sum/internal/mdfile"
 	"github.com/antalkon/ytb-sum/internal/render"
@@ -66,7 +68,9 @@ API key lookup: --api-key, $OPENROUTER_API_KEY, macOS Keychain
 		Example: `  ytb-sum https://youtu.be/aircAruvnKk
   ytb-sum -q fast -l en --length short dQw4w9WgXcQ
   ytb-sum -m deepseek/deepseek-v4.1-flash --no-file <url>
-  ytb-sum --audio <url-of-video-without-subtitles>`,
+  ytb-sum --audio <url-of-video-without-subtitles>
+  ytb-sum --html <url>            # also make a web page and open it
+  ytb-sum html "Video title.md"   # turn an existing summary into a web page`,
 		Args:          cobra.ExactArgs(1),
 		SilenceUsage:  true,
 		SilenceErrors: true,
@@ -93,11 +97,14 @@ API key lookup: --api-key, $OPENROUTER_API_KEY, macOS Keychain
 	f.StringVar(&fl.CookiesFromBrowser, "cookies-from-browser", "", "pass browser cookies to yt-dlp for age-restricted/private videos (e.g. chrome)")
 	f.BoolVarP(&fl.AudioFallback, "audio", "a", false, "transcribe the audio when the video has no subtitles")
 	f.BoolVar(&fl.NoFile, "no-file", false, "print only, do not write a .md file")
+	f.BoolVar(&fl.HTML, "html", false, "also save a styled .html page and open it in the browser")
+	f.BoolVar(&fl.NoOpen, "no-open", false, "with --html: do not open the browser")
 	f.BoolVar(&fl.NoColor, "no-color", false, "disable colors and styling")
 	f.DurationVar(&fl.Timeout, "timeout", 0, "overall timeout (default 10m)")
 	f.BoolVarP(&fl.Verbose, "verbose", "v", false, "print each stage")
 	cmd.SetVersionTemplate("ytb-sum {{.Version}}\n")
 	cmd.AddCommand(newConfigCmd(&fl))
+	cmd.AddCommand(newHTMLCmd())
 	return cmd
 }
 
@@ -148,6 +155,8 @@ func resolveConfig(cmd *cobra.Command, fl config.Config) (config.Config, error) 
 		"audio":    {&cfg.AudioFallback, &fl.AudioFallback},
 		"no-file":  {&cfg.NoFile, &fl.NoFile},
 		"no-color": {&cfg.NoColor, &fl.NoColor},
+		"html":     {&cfg.HTML, &fl.HTML},
+		"no-open":  {&cfg.NoOpen, &fl.NoOpen},
 		"verbose":  {&cfg.Verbose, &fl.Verbose},
 	}
 	for name, p := range bools {
@@ -265,15 +274,35 @@ func run(parent context.Context, cfg config.Config, input string) error {
 	spin.Finish()
 
 	stats := render.Stats{Model: res.Model, Caption: captionLabel, Usage: usage, Chunks: res.Chunks}
+	doc := mdfile.Document(video, sum, cfg.Lang)
 	if !cfg.NoFile {
-		path, err := mdfile.Write(outDir, video.Title, mdfile.Document(video, sum, cfg.Lang))
+		path, err := mdfile.Write(outDir, video.Title, doc)
 		if err != nil {
 			return fmt.Errorf("save markdown: %w", err)
 		}
 		stats.File = displayPath(path)
 	}
+	var htmlPath string
+	if cfg.HTML {
+		page, err := htmlpage.Render(doc, htmlLang(cfg.Lang))
+		if err != nil {
+			return err
+		}
+		if htmlPath, err = mdfile.WriteExt(outDir, video.Title, ".html", page); err != nil {
+			return fmt.Errorf("save html: %w", err)
+		}
+		stats.HTML = displayPath(htmlPath)
+	}
 	stats.Elapsed = time.Since(start)
-	return render.NewPrinter(cfg.NoColor).Summary(video, sum, cfg.Lang, stats)
+	if err := render.NewPrinter(cfg.NoColor).Summary(video, sum, cfg.Lang, stats); err != nil {
+		return err
+	}
+	if htmlPath != "" && !cfg.NoOpen {
+		if err := browser.Open(htmlPath); err != nil {
+			fmt.Fprintln(os.Stderr, "Could not open the browser:", err)
+		}
+	}
+	return nil
 }
 
 func outputDir(cfg config.Config) (string, error) {

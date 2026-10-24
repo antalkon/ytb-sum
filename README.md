@@ -39,13 +39,14 @@ $ ytb-sum https://youtu.be/aircAruvnKk
   ✔ Saved But what is a neural network Deep learning chapter 1.md
 ```
 
-See a full generated file: [docs/example-ru.md](docs/example-ru.md).
+See a full generated file: [docs/example-ru.md](docs/example-ru.md) and its web page version [docs/example-ru.html](docs/example-ru.html).
 
 ## Features
 
 - **Clear, structured summaries**: TL;DR, key points, chronological sections with clickable timestamps, takeaways and mentioned resources.
 - **Pretty terminal output** with colors, adapting to dark/light themes. Plain Markdown when piped or with `--no-color`.
 - **Saves `<video title>.md`** in the current directory (never overwrites; adds ` (2)`).
+- **Web page view**: `--html` also saves a styled, self-contained `.html` (dark/light theme, section navigation, clickable timestamps) and opens it in your browser; `ytb-sum html <file.md>` does the same for any saved summary.
 - **Any model via [OpenRouter](https://openrouter.ai)**, or any OpenAI-compatible API (Ollama, LM Studio…), with automatic fallback to a second model.
 - **Any summary language** (`--lang`, default `ru`), whatever the video's language.
 - **Videos without subtitles**: `--audio` transcribes the audio track with Gemini.
@@ -132,6 +133,8 @@ Accepts `watch?v=`, `youtu.be/`, `/shorts/`, `/live/`, `/embed/`, `music.youtube
 | `--audio-model` | `google/gemini-3.8-flash` | Model for `--audio` |
 | `-o, --output` | current dir | Where to save the `.md` file |
 | `--no-file` | off | Print only |
+| `--html` | off | Also save a styled `.html` page and open it in the browser |
+| `--no-open` | off | With `--html`: save the page without opening it |
 | `--no-color` | off | Plain output (also respects `NO_COLOR`) |
 | `--cookies-from-browser` | — | Pass browser cookies to yt-dlp (age-restricted/members videos), e.g. `chrome` |
 | `--base-url` | OpenRouter | Any OpenAI-compatible endpoint |
@@ -157,6 +160,8 @@ ytb-sum -l en -o ~/Notes/youtube <url>                         # English, into a
 ytb-sum -m deepseek/deepseek-v4.1-flash <url>                  # any OpenRouter model
 ytb-sum --audio <url>                                          # video without subtitles
 ytb-sum --no-file --no-color <url> | less                      # pipe plain Markdown
+ytb-sum --html <url>                                           # .md + .html, opened in the browser
+ytb-sum html "Video title.md"                                  # web page from a saved summary
 ytb-sum --base-url http://localhost:11434/v1 -m qwen3 <url>    # local Ollama
 ```
 
@@ -165,6 +170,7 @@ ytb-sum --base-url http://localhost:11434/v1 -m qwen3 <url>    # local Ollama
 Priority: **flags → environment → config file → defaults**.
 
 ```bash
+ytb-sum html <file.md> [-o page.html] [--no-open]   # Markdown summary → web page
 ytb-sum config init   # create ~/.config/ytb-sum/config.yaml (mode 600)
 ytb-sum config show   # print resolved settings, key masked
 ytb-sum config path

@@ -39,13 +39,14 @@ $ ytb-sum https://youtu.be/aircAruvnKk
   ✔ Saved But what is a neural network Deep learning chapter 1.md
 ```
 
-Полный пример сохранённого файла: [docs/example-ru.md](docs/example-ru.md).
+Полный пример сохранённого файла: [docs/example-ru.md](docs/example-ru.md), а также его версия в виде веб-страницы: [docs/example-ru.html](docs/example-ru.html).
 
 ## Возможности
 
 - **Чёткое структурированное саммари**: кратко, ключевые тезисы, разделы по хронологии с кликабельными таймкодами, выводы и упомянутые ресурсы.
 - **Красивый вывод в терминал**: цвета и стили, подстройка под тёмную и светлую тему. При выводе в pipe или с `--no-color` печатается чистый Markdown.
 - **Сохраняет `<название видео>.md`** в текущую папку. Существующие файлы не перезаписываются, к имени добавляется ` (2)`.
+- **Веб-страница**: `--html` дополнительно сохраняет красивый самодостаточный `.html` (тёмная и светлая тема, навигация по разделам, кликабельные таймкоды) и открывает его в браузере. Команда `ytb-sum html <файл.md>` делает то же для любого сохранённого саммари.
 - **Любая модель через [OpenRouter](https://openrouter.ai)** или любой OpenAI-совместимый API (Ollama, LM Studio…). Если основная модель недоступна, запрос автоматически уходит на запасную.
 - **Любой язык саммари** (`--lang`, по умолчанию `ru`) независимо от языка видео.
 - **Видео без субтитров**: `--audio` расшифровывает звуковую дорожку через Gemini.
@@ -132,6 +133,8 @@ ytb-sum <youtube-url|video-id> [флаги]
 | `--audio-model` | `google/gemini-3.8-flash` | Модель для `--audio` |
 | `-o, --output` | текущая папка | Куда сохранить `.md` |
 | `--no-file` | выкл | Только вывод в терминал |
+| `--html` | выкл | Дополнительно сохранить `.html` и открыть в браузере |
+| `--no-open` | выкл | С `--html`: сохранить страницу, но не открывать браузер |
 | `--no-color` | выкл | Без цветов (также учитывается `NO_COLOR`) |
 | `--cookies-from-browser` | — | Куки браузера для yt-dlp (видео 18+ и для спонсоров), например `chrome` |
 | `--base-url` | OpenRouter | Любой OpenAI-совместимый endpoint |
@@ -157,6 +160,8 @@ ytb-sum -l en -o ~/Notes/youtube <url>                         # на англи
 ytb-sum -m deepseek/deepseek-v4.1-flash <url>                  # любая модель OpenRouter
 ytb-sum --audio <url>                                          # видео без субтитров
 ytb-sum --no-file --no-color <url> | less                      # чистый Markdown в pipe
+ytb-sum --html <url>                                           # .md + .html, сразу в браузере
+ytb-sum html "Название видео.md"                               # веб-страница из готового саммари
 ytb-sum --base-url http://localhost:11434/v1 -m qwen3 <url>    # локальная Ollama
 ```
 
@@ -165,6 +170,7 @@ ytb-sum --base-url http://localhost:11434/v1 -m qwen3 <url>    # локальн�
 Приоритет: **флаги → переменные окружения → файл конфига → значения по умолчанию**.
 
 ```bash
+ytb-sum html <файл.md> [-o page.html] [--no-open]   # саммари в Markdown → веб-страница
 ytb-sum config init   # создать ~/.config/ytb-sum/config.yaml (права 600)
 ytb-sum config show   # итоговые настройки, ключ скрыт
 ytb-sum config path

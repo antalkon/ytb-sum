@@ -47,6 +47,8 @@ type Config struct {
 	CookiesFromBrowser string        `yaml:"cookies_from_browser"`
 	AudioFallback      bool          `yaml:"audio_fallback"`
 	NoFile             bool          `yaml:"no_file"`
+	HTML               bool          `yaml:"html"`
+	NoOpen             bool          `yaml:"no_open"`
 	NoColor            bool          `yaml:"no_color"`
 	Timeout            time.Duration `yaml:"timeout"`
 	Verbose            bool          `yaml:"-"`
@@ -187,5 +189,7 @@ length: medium             # short | medium | long
 # output_dir: ~/Notes/youtube
 # cookies_from_browser: chrome
 audio_fallback: false      # transcribe audio when a video has no subtitles
+html: false                # also save an HTML page and open it in the browser
+no_open: false             # with html: save it but do not open the browser
 timeout: 10m
 `
