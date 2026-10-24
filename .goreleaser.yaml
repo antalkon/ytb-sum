@@ -1,0 +1,82 @@
+# GoReleaser config: https://goreleaser.com
+version: 2
+project_name: ytb-sum
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: ytb-sum
+    main: ./cmd/ytb-sum
+    binary: ytb-sum
+    env:
+      - CGO_ENABLED=0
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w -X github.com/antalkon/ytb-sum/internal/cli.Version={{ .Version }}
+    mod_timestamp: "{{ .CommitTimestamp }}"
+
+archives:
+  - id: default
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    files:
+      - README.md
+      - README.ru.md
+      - LICENSE
+      - CHANGELOG.md
+
+nfpms:
+  - id: packages
+    package_name: ytb-sum
+    file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+    homepage: https://github.com/antalkon/ytb-sum
+    maintainer: antalkon <antalkon789@gmail.com>
+    description: Summarize YouTube videos in the terminal with an LLM and save them as Markdown.
+    license: MIT
+    formats: [deb, rpm, apk]
+    recommends:
+      - ffmpeg
+    suggests:
+      - yt-dlp
+
+checksum:
+  name_template: checksums.txt
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+      - "^chore:"
+      - Merge pull request
+
+release:
+  github:
+    owner: antalkon
+    name: ytb-sum
+  header: |
+    ## ytb-sum {{ .Tag }}
+
+    **Quick install (macOS / Linux):**
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/antalkon/ytb-sum/main/install.sh | sh
+    ```
+    **Windows (PowerShell):**
+    ```powershell
+    irm https://raw.githubusercontent.com/antalkon/ytb-sum/main/install.ps1 | iex
+    ```
+    Requires [yt-dlp](https://github.com/yt-dlp/yt-dlp) (and `ffmpeg` for `--audio`). See the [README](https://github.com/antalkon/ytb-sum#readme).
